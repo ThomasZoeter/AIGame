@@ -1,0 +1,42 @@
+name: Build and deploy to GitHub Pages
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install NodeJS
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      - name: Install and Build
+        run: |
+          npm ci
+          npm run build:production
+
+      - name: Upload files
+        id: deployment
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/aigame/browser
+
+  deploy-to-gh-pages:
+    needs: build
+    runs-on: ubuntu-latest
+    if: success()
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
