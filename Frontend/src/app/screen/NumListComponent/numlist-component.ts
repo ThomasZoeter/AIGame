@@ -1,10 +1,14 @@
 import {Component, OnInit, signal} from '@angular/core';
 import { Number } from '../../backend/number';
 import { NumberService } from '../../backend/NumberService';
+import {Router, RouterLink} from "@angular/router";
 
 @Component({
     selector: 'number-list',
     templateUrl: './numlist-component.html',
+    imports: [
+        RouterLink
+    ],
     standalone: true,
     styleUrls: ['./numlist-component.css']
 })
@@ -14,17 +18,17 @@ export class NumberListComponent implements OnInit {
 
     numbers = signal(this.num);
 
-    constructor(private numberService: NumberService) {
-        console.log(this.numbers)
+    constructor(private numberService: NumberService, private router: Router) {
     }
 
     ngOnInit() {
-        console.log("1")
         this.numberService.findAll().subscribe(data => {
             this.numbers.update(() => data);
             console.log(data)
         });
-        // this.numbers = [{id: "1", number: "DFT"}]
-        console.log("2")
+    }
+
+    goToAddEntity() {
+        this.router.navigate(['/add-number'])
     }
 }

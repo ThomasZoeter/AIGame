@@ -1,18 +1,21 @@
 package test.app;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.jetbrains.annotations.NotNull;
+
+import javax.persistence.*;
 
 @Entity
+@Table
 public class Number {
     @Id
+    @Column
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column
     private String number;
 
-    public Number(String number) {
+    public Number( String number) {
         this.number = number;
     }
 
@@ -32,6 +35,7 @@ public class Number {
         this.number = number;
     }
 
+    @NotNull
     public String getNumber() {
         return number;
     }

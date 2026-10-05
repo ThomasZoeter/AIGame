@@ -16,7 +16,8 @@ export class NumberService {
         return this.http.get<Number[]>(this.numUrl);
     }
 
-    public save(num: Number) {
-        return this.http.post<Number>(this.numUrl, num);
+    public save(number: Number) {
+        console.log("Num.number: " + number.number)
+        return this.http.post<Number>(this.numUrl, number);
     }
 }

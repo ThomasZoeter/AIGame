@@ -20,6 +20,6 @@ export class ScreenView {
     }
 
     public navigateToNumbers() {
-        this.router.navigate(['/numbers'])
+        this.router.navigate(['/showall'])
     }
 }

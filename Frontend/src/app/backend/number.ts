@@ -1,4 +1,4 @@
 export class Number {
-    id: string;
+    id: number;
     number: string;
 }
