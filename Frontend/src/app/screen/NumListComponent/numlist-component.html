@@ -1,0 +1,14 @@
+<h1>SON</h1>
+<div class="card my-5">
+    <div class="card-body">
+        <div>
+            @for (num of numbers();let idx = $index;track idx) {
+                <div>
+                    <td>{{ num.id }}</td>
+                    <td>{{ num.number }}</td>
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
