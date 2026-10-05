@@ -1,17 +1,26 @@
 <button (click)="goToAddEntity()">Add entity:</button>
 <div class="card my-5">
     <div class="card-body">
-        <div>
-            @for (num of numbers();let idx = $index;track idx) {
-                <div class="numberEntity">
-                    <td>ID: {{ num.id }}</td>
-                    <td>, Number: {{ num.number }}</td>
-                    <td>
-                        <button (click)="deleteNumber(num.id)"> Delete</button>
-                    </td>
-                </div>
-            }
-        </div>
+        <table>
+            <thead>
+            <th>ID</th>
+            <th>Number</th>
+            <th>Actions</th>
+            </thead>
+            <tbody>
+
+                @for (num of numbers();let idx = $index;track idx) {
+                    <tr>
+                        <td>{{ num.id }}</td>
+                        <td>{{ num.number }}</td>
+                        <td>
+                            <button (click)="deleteNumber(num.id)"> Delete</button>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
 
     </div>
 </div>
