@@ -20,4 +20,8 @@ export class NumberService {
         console.log("Num.number: " + number.number)
         return this.http.post<Number>(this.numUrl, number);
     }
+
+    public deleteNumber(id: number): Observable<Object>{
+        return this.http.delete(`${this.numUrl}/${id}`);
+    }
 }

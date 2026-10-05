@@ -6,6 +6,9 @@
                 <div class="numberEntity">
                     <td>ID: {{ num.id }}</td>
                     <td>, Number: {{ num.number }}</td>
+                    <td>
+                        <button (click)="deleteNumber(num.id)"> Delete</button>
+                    </td>
                 </div>
             }
         </div>

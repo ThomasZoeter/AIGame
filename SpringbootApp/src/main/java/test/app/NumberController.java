@@ -22,13 +22,11 @@ public class NumberController {
     @PostMapping("/numbers")
     public void addNumber(@RequestBody Number number) {
         System.out.println("backend: " + number.getNumber());
-//        Number newNum = new Number();
-//        newNum.setNumber(number);
         numRepo.save(number);
     }
 
-    @GetMapping("/delete-id")
-    public void delete(long id) {
+    @DeleteMapping("/numbers/{id}")
+    public void delete(@PathVariable Long id) {
         numRepo.deleteById(id);
     }
 }

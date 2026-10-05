@@ -22,6 +22,10 @@ export class NumberListComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.getNumbers();
+    }
+
+    private getNumbers(){
         this.numberService.findAll().subscribe(data => {
             this.numbers.update(() => data);
             console.log(data)
@@ -30,5 +34,12 @@ export class NumberListComponent implements OnInit {
 
     goToAddEntity() {
         this.router.navigate(['/add-number'])
+    }
+
+    deleteNumber(id: number) {
+        this.numberService.deleteNumber(id).subscribe(data => {
+            console.log(data);
+            this.getNumbers();
+        })
     }
 }
