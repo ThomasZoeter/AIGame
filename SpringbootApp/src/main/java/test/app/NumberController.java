@@ -19,10 +19,21 @@ public class NumberController {
         return (List<Number>) numRepo.findAll();
     }
 
+    @GetMapping("/numbers/{id}")
+    public Number getNumber(@PathVariable Long id) {
+        return numRepo.findById(id).orElseThrow();
+    }
+
     @PostMapping("/numbers")
     public void addNumber(@RequestBody Number number) {
-        System.out.println("backend: " + number.getNumber());
         numRepo.save(number);
+    }
+
+    @PutMapping("/numbers/{id}")
+    public void updateNumber(@PathVariable Long id, @RequestBody Number numberBody) {
+        Number numToChange = numRepo.findById(id).orElseThrow();
+        numToChange.setNumber(numberBody.getNumber());
+        numRepo.save(numToChange);
     }
 
     @DeleteMapping("/numbers/{id}")

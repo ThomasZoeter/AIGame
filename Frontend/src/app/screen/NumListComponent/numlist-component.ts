@@ -28,7 +28,6 @@ export class NumberListComponent implements OnInit {
     private getNumbers(){
         this.numberService.findAll().subscribe(data => {
             this.numbers.update(() => data);
-            console.log(data)
         });
     }
 
@@ -38,8 +37,11 @@ export class NumberListComponent implements OnInit {
 
     deleteNumber(id: number) {
         this.numberService.deleteNumber(id).subscribe(data => {
-            console.log(data);
             this.getNumbers();
         })
+    }
+
+    updateNumber(id: number) {
+        this.router.navigate(['update-number', id])
     }
 }

@@ -27,7 +27,6 @@ export class AddNumComponent {
         this.numberService.save(this.number).subscribe(result => this.gotoUserList())
     }
     onSubmit() {
-        console.log("This num after submit: " + this.number)
         this.saveNumber()
     }
 

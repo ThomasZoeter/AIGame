@@ -17,8 +17,15 @@ export class NumberService {
     }
 
     public save(number: Number) {
-        console.log("Num.number: " + number.number)
         return this.http.post<Number>(this.numUrl, number);
+    }
+
+    public getNumberById(id: number): Observable<Number>{
+        return this.http.get<Number>(`${this.numUrl}/${id}`);
+    }
+
+    public updateNumber(id: number, number: Number): Observable<Object> {
+        return this.http.put<Number>(`${this.numUrl}/${id}`, number);
     }
 
     public deleteNumber(id: number): Observable<Object>{
