@@ -16,7 +16,7 @@ export class ScreenView {
     title: String;
 
     constructor(private router: Router,) {
-        this.title = "JOHO"
+        this.title = "Numbers"
     }
 
     public navigateToNumbers() {
