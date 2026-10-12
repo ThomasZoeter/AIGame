@@ -6,20 +6,20 @@ import javax.persistence.*;
 
 @Entity
 @Table
-public class Number {
+public class Message {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column
-    private String number;
+    private String message;
 
-    public Number( String number) {
-        this.number = number;
+    public Message( String Message) {
+        this.message = Message;
     }
 
-    public Number() {
+    public Message() {
 
     }
 
@@ -31,16 +31,16 @@ public class Number {
         return id;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     @NotNull
-    public String getNumber() {
-        return number;
+    public String getMessage() {
+        return message;
     }
 
     public String toString() {
-        return this.id + ", " + this.number;
+        return this.id + ", " + this.message;
     }
 }

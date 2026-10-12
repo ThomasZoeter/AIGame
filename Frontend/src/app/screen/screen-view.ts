@@ -16,10 +16,10 @@ export class ScreenView {
     title: String;
 
     constructor(private router: Router,) {
-        this.title = "Numbers"
+        this.title = "Messages"
     }
 
-    public navigateToNumbers() {
+    public navigateToMessages() {
         this.router.navigate(['/showall'])
     }
 }

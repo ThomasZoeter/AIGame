@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface NumberRepository extends CrudRepository<Number, Long> {
+public interface MessageRepository extends CrudRepository<Message, Long> {
 }

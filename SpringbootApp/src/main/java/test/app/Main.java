@@ -15,13 +15,13 @@ public class Main {
     }
 
     @Bean
-    CommandLineRunner init(NumberRepository numRepo) {
+    CommandLineRunner init(MessageRepository msgRepo) {
         return args -> {
-            Stream.of("Waa", "Woo").forEach(number -> {
-                Number num = new Number(number);
-                numRepo.save(num);
+            Stream.of("Waa", "Woo").forEach(message -> {
+                Message msg = new Message(message);
+                msgRepo.save(msg);
             });
-            numRepo.findAll().forEach(System.out::println);
+            msgRepo.findAll().forEach(System.out::println);
         };
     }
 }

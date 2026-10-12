@@ -4,18 +4,18 @@
         <table>
             <thead>
             <th>ID</th>
-            <th>Number</th>
+            <th>Message</th>
             <th>Actions</th>
             </thead>
             <tbody>
 
-                @for (num of numbers();let idx = $index;track idx) {
+                @for (num of messages();let idx = $index;track idx) {
                     <tr>
                         <td>{{ num.id }}</td>
-                        <td>{{ num.number }}</td>
+                        <td>{{ num.message }}</td>
                         <td>
-                            <button (click)="updateNumber(num.id)"> Update</button>
-                            <button (click)="deleteNumber(num.id)"> Delete</button>
+                            <button (click)="updateMessage(num.id)"> Update</button>
+                            <button (click)="deleteMessage(num.id)"> Delete</button>
                         </td>
                     </tr>
                 }
