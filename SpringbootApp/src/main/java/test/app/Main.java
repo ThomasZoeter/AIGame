@@ -13,15 +13,4 @@ public class Main {
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
     }
-
-    @Bean
-    CommandLineRunner init(MessageRepository msgRepo) {
-        return args -> {
-            Stream.of("Waa", "Woo").forEach(message -> {
-                Message msg = new Message(message);
-                msgRepo.save(msg);
-            });
-            msgRepo.findAll().forEach(System.out::println);
-        };
-    }
 }

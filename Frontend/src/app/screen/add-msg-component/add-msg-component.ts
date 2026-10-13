@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from '../../backend/MessageService';
-import { Message } from '../../backend/Message';
+import { Message } from '../../backend/message';
 import {FormsModule} from "@angular/forms";
 
 @Component({

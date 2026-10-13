@@ -1,4 +1,4 @@
 export class Message {
-    id: Message;
-    message: string;
+  id: number;
+  message: string = '';
 }

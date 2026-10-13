@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from '../../backend/MessageService';
-import { Message } from '../../backend/Message';
+import { Message } from '../../backend/message';
 import { ActivatedRoute, Router } from '@angular/router';
 import {FormsModule} from "@angular/forms";
 
@@ -15,7 +15,7 @@ import {FormsModule} from "@angular/forms";
 })
 export class UpdateMsgComponent implements OnInit {
 
-    id: Message;
+    id: number;
     message: Message = new Message();
     constructor(private MessageService: MessageService,
                 private route: ActivatedRoute,

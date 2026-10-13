@@ -1,27 +1,370 @@
-<button (click)="goToAddEntity()">Add entity:</button>
-<div class="card my-5">
-    <div class="card-body">
-        <table>
+<div class="workspace" [attr.inert]="dialog() ? '' : null">
+  <aside class="sidebar">
+    <a class="brand" href="./showall" aria-label="Dispatch home"
+      ><span class="brand-icon"><app-icon name="message" /></span>dispatch<span class="brand-period"
+        >.</span
+      ></a
+    >
+    <div class="workspace-picker">
+      <span class="workspace-avatar">P</span>
+      <div><strong>Personal workspace</strong><small>Your space to create</small></div>
+      <app-icon name="down" />
+    </div>
+    <div class="nav-label">WORKSPACE</div>
+    <nav aria-label="Main navigation">
+      <a class="nav-item active" href="./showall"
+        ><app-icon name="message" />Messages<span class="nav-count">{{
+          messages().length
+        }}</span></a
+      >
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="idea-card">
+        <span class="idea-icon"><app-icon name="leaf" /></span>
+        <h3>A little space. Big ideas.</h3>
+        <p>Capture a thought. Share an update.<br />Make room for what matters.</p>
+        <button (click)="openCreate()">Write a message <app-icon name="arrow" /></button>
+      </div>
+      <button class="help-button" (click)="dialog.set('help')">
+        <app-icon name="help" />Help & getting started<app-icon name="chevron" />
+      </button>
+      <div class="profile">
+        <span class="profile-avatar">PW</span>
+        <div><strong>Your workspace</strong><small>Personal collection</small></div>
+        <span class="profile-dot"></span>
+      </div>
+    </div>
+  </aside>
+  <div class="main-shell">
+    <header class="topbar">
+      <div class="breadcrumb">Workspace <app-icon name="chevron" /><span>Messages</span></div>
+      <span class="connection"
+        ><span></span
+        >{{ loading() ? 'Connecting' : local() ? 'Local workspace' : 'Connected' }}</span
+      >
+    </header>
+    <main>
+      <div class="page-heading">
+        <div>
+          <div class="eyebrow">YOUR WORDS, IN ONE PLACE</div>
+          <h1>Messages<span>.</span></h1>
+          <p>A home for your thoughts, updates, and everything in between.</p>
+        </div>
+        <button class="primary new-button" (click)="openCreate()">
+          <app-icon name="plus" />New message
+        </button>
+      </div>
+      <div class="stats">
+        <div class="stat-card">
+          <div>
+            <span class="stat-label">Total messages</span>
+            <div class="stat-value">{{ messages().length }}<span>in your workspace</span></div>
+          </div>
+          <span class="stat-icon green"><app-icon name="message" /></span>
+        </div>
+        <div class="stat-card">
+          <div>
+            <span class="stat-label">Words worth keeping</span>
+            <div class="stat-value">
+              {{ characters().toLocaleString() }}<span>characters captured</span>
+            </div>
+          </div>
+          <span class="stat-icon sand"><app-icon name="edit" /></span>
+        </div>
+        <div class="stat-card">
+          <div>
+            <span class="stat-label">A little more clarity</span>
+            <div class="stat-tag"><span></span>All in one place</div>
+            <span class="stat-caption">Less scattered. More collected.</span>
+          </div>
+          <span class="stat-icon lilac"><app-icon name="grid" /></span>
+        </div>
+      </div>
+      <section class="message-panel" aria-labelledby="list-title">
+        <div class="panel-heading">
+          <div>
+            <h2 id="list-title">
+              All messages <span>{{ messages().length }}</span>
+            </h2>
+            <p>Your collection, ready whenever you are.</p>
+          </div>
+          <button class="quiet-button" (click)="exportMessages()" [disabled]="!messages().length">
+            <app-icon name="download" />Export
+          </button>
+        </div>
+        <div class="toolbar">
+          <label class="search"
+            ><app-icon name="search" /><input
+              aria-label="Search messages"
+              placeholder="Search messages..."
+              [ngModel]="query()"
+              (ngModelChange)="search($event)"
+            />
+            @if (query()) {
+              <button aria-label="Clear search" (click)="search('')">
+                <app-icon name="close" />
+              </button>
+            }
+            <span class="search-hint">/</span></label
+          >
+          <div class="toolbar-right">
+            @if (selected().length) {
+              <button class="bulk-delete" (click)="openDelete(selected())">
+                <app-icon name="trash" />Delete ({{ selected().length }})
+              </button>
+            }
+            <label class="sort-control"
+              ><app-icon name="sort" /><select
+                aria-label="Sort messages"
+                [ngModel]="sort()"
+                (ngModelChange)="changeSort($event)"
+              >
+                <option value="newest">Newest first</option>
+                <option value="oldest">Oldest first</option>
+                <option value="alphabetical">Alphabetical</option>
+              </select></label
+            >
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table>
             <thead>
-            <th>ID</th>
-            <th>Message</th>
-            <th>Actions</th>
+              <tr>
+                <th class="check-cell">
+                  <input
+                    type="checkbox"
+                    aria-label="Select all visible messages"
+                    [checked]="allSelected()"
+                    (change)="toggleAll()"
+                  />
+                </th>
+                <th class="id-cell">MESSAGE ID</th>
+                <th>MESSAGE</th>
+                <th class="action-cell">ACTIONS</th>
+              </tr>
             </thead>
             <tbody>
-
-                @for (num of messages();let idx = $index;track idx) {
-                    <tr>
-                        <td>{{ num.id }}</td>
-                        <td>{{ num.message }}</td>
-                        <td>
-                            <button (click)="updateMessage(num.id)"> Update</button>
-                            <button (click)="deleteMessage(num.id)"> Delete</button>
-                        </td>
-                    </tr>
+              @if (loading()) {
+                <tr>
+                  <td colspan="4" class="empty-state">Gathering your messages…</td>
+                </tr>
+              } @else {
+                @for (m of visible(); track m.id) {
+                  <tr [class.selected-row]="selected().includes(m.id)">
+                    <td class="check-cell">
+                      <input
+                        type="checkbox"
+                        [attr.aria-label]="'Select message ' + m.id"
+                        [checked]="selected().includes(m.id)"
+                        (change)="toggle(m.id)"
+                      />
+                    </td>
+                    <td class="id-cell">
+                      <span class="id-badge">#{{ m.id }}</span>
+                    </td>
+                    <td>
+                      <button class="message-content" (click)="openEdit(m)">{{ m.message }}</button
+                      ><span class="message-detail">{{ m.message.length }} characters</span>
+                    </td>
+                    <td class="action-cell">
+                      <div class="row-actions">
+                        <button
+                          [attr.aria-label]="'Edit message ' + m.id"
+                          title="Edit message"
+                          (click)="openEdit(m)"
+                        >
+                          <app-icon name="edit" /></button
+                        ><button
+                          class="delete-action"
+                          [attr.aria-label]="'Delete message ' + m.id"
+                          title="Delete message"
+                          (click)="openDelete([m.id])"
+                        >
+                          <app-icon name="trash" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="4">
+                      <div class="empty-state">
+                        <app-icon name="message" />
+                        <h3>{{ query() ? 'No messages found' : 'A fresh page awaits' }}</h3>
+                        <p>
+                          {{
+                            query()
+                              ? 'Try a different word or message ID.'
+                              : 'Start your collection with your first message.'
+                          }}
+                        </p>
+                        <button class="primary" (click)="query() ? search('') : openCreate()">
+                          {{ query() ? 'Clear search' : 'Write a message' }}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
                 }
-
+              }
             </tbody>
-        </table>
-
-    </div>
+          </table>
+        </div>
+        <div class="pagination">
+          <span
+            >Showing <strong>{{ start() }}–{{ end() }}</strong> of
+            <strong>{{ filtered().length }}</strong> messages</span
+          >
+          <div>
+            <button
+              class="page-arrow previous"
+              aria-label="Previous page"
+              [disabled]="page() === 1"
+              (click)="page.set(page() - 1)"
+            >
+              <app-icon name="chevron" /></button
+            ><span class="page-number">{{ page() }}</span
+            ><span class="page-total">of {{ pageCount() }}</span
+            ><button
+              class="page-arrow"
+              aria-label="Next page"
+              [disabled]="page() >= pageCount()"
+              (click)="page.set(page() + 1)"
+            >
+              <app-icon name="chevron" />
+            </button>
+          </div>
+        </div>
+      </section>
+      <div class="under-panel">
+        <span
+          ><app-icon name="check" />{{
+            local()
+              ? 'Sample messages · Changes saved in this browser'
+              : 'Your messages are saved in your workspace'
+          }}</span
+        ><span>Thoughtfully simple. Simply yours.</span>
+      </div>
+      <div class="bottom-note">
+        <span class="note-icon"><app-icon name="bolt" /></span>
+        <div>
+          <strong>Every good idea starts with a few words.</strong>
+          <p>You bring the thoughts. We’ll keep them organized.</p>
+        </div>
+        <button (click)="openCreate()">Create something <app-icon name="arrow" /></button>
+      </div>
+      <footer>
+        <span
+          >dispatch<span class="footer-period">.</span><span class="footer-divider">/</span>A little
+          more organized.</span
+        ><span>Made for your everyday thoughts <span class="tiny-spark">✳</span></span>
+      </footer>
+    </main>
+  </div>
 </div>
+@if (notice()) {
+  <div class="toast" role="status">
+    <app-icon name="check" />{{ notice()
+    }}<button aria-label="Dismiss notification" (click)="notice.set('')">
+      <app-icon name="close" />
+    </button>
+  </div>
+}
+@if (dialog()) {
+  <div class="modal-backdrop" (click)="close()">
+    <section
+      class="modal"
+      appDialog
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="dialog-title"
+      (click)="$event.stopPropagation()"
+      (keydown.escape)="close()"
+    >
+      <button class="modal-close" aria-label="Close dialog" (click)="close()" [disabled]="busy()">
+        <app-icon name="close" />
+      </button>
+      <span class="modal-icon" [class.danger-icon]="dialog() === 'delete'"
+        ><app-icon [name]="dialog() === 'delete' ? 'trash' : dialog() === 'help' ? 'book' : 'edit'"
+      /></span>
+      @if (dialog() === 'help') {
+        <h2 id="dialog-title">Make yourself at home.</h2>
+        <p>Dispatch is a simple place to collect your words.</p>
+        <div class="help-content">
+          <p><strong>Create.</strong> Use New message to capture a thought.</p>
+          <p><strong>Find.</strong> Search by content or ID, and sort your collection.</p>
+          <p>
+            <strong>Refine.</strong> Click a message or its pencil to edit it. Select messages to
+            delete them together.
+          </p>
+          <p><strong>Keep.</strong> Export your collection as a JSON file.</p>
+          @if (local()) {
+            <p class="local-info">
+              The server is unavailable, so you’re viewing sample messages in a local workspace.
+              Changes are saved in this browser and are not synced to the server.
+            </p>
+          }
+        </div>
+        <button class="primary" (click)="close()">Got it <app-icon name="check" /></button>
+      } @else if (dialog() === 'delete') {
+        <h2 id="dialog-title">
+          Delete {{ deleteIds.length === 1 ? 'this message' : deleteIds.length + ' messages' }}?
+        </h2>
+        <p>
+          This will permanently remove
+          {{ deleteIds.length === 1 ? 'the message' : 'these messages' }} from your
+          {{ local() ? 'local ' : '' }}workspace.
+        </p>
+        @if (error()) {
+          <p class="form-error" role="alert">{{ error() }}</p>
+        }
+        <div class="modal-footer">
+          <button class="secondary" (click)="close()" [disabled]="busy()">
+            Keep {{ deleteIds.length === 1 ? 'message' : 'messages' }}</button
+          ><button class="danger-button" (click)="remove()" [disabled]="busy()">
+            {{ busy() ? 'Deleting…' : 'Delete permanently' }}
+          </button>
+        </div>
+      } @else {
+        <h2 id="dialog-title">
+          {{ dialog() === 'edit' ? 'A little refinement.' : 'What’s on your mind?' }}
+        </h2>
+        <p>
+          {{
+            dialog() === 'edit'
+              ? 'Make your words feel just right.'
+              : 'A thought, an update, a spark of an idea. Save it here.'
+          }}
+        </p>
+        <form (ngSubmit)="save()">
+          <label class="field-label" for="message-draft">Message</label
+          ><textarea
+            id="message-draft"
+            name="message"
+            [(ngModel)]="draft"
+            placeholder="Let your thoughts take shape…"
+            rows="6"
+            maxlength="4000"
+            required
+            autofocus
+          ></textarea>
+          <div class="field-meta">
+            <span>{{ local() ? 'Saved in this browser' : 'Saved to your workspace' }}</span
+            ><span>{{ draft.length }} / 4,000</span>
+          </div>
+          @if (error()) {
+            <p class="form-error" role="alert">{{ error() }}</p>
+          }
+          <div class="modal-footer">
+            <button type="button" class="secondary" (click)="close()" [disabled]="busy()">
+              Cancel</button
+            ><button class="primary" type="submit" [disabled]="!draft.trim() || busy()">
+              <app-icon name="check" />{{
+                busy() ? 'Saving…' : dialog() === 'edit' ? 'Save changes' : 'Create message'
+              }}
+            </button>
+          </div>
+        </form>
+      }
+    </section>
+  </div>
+}
